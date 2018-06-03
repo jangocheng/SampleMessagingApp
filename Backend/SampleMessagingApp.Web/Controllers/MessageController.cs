@@ -10,14 +10,14 @@ using SampleMessagingApp.Core.Web.Model;
 
 namespace SampleMessagingApp.Web.Controllers
 {
-    [Route("auth")]
-    public class AuthController : Controller
+    [Route("api/message")]
+    public class TokenController : Controller
     {
         private readonly IJwtService jwtService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
 
-        public AuthController(IJwtService jwtService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public TokenController(IJwtService jwtService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.jwtService = jwtService;
             this.userManager = userManager;
@@ -25,8 +25,8 @@ namespace SampleMessagingApp.Web.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] AuthCredentials credentials)
+        [Authorize]
+        public async Task<IActionResult> Register([FromBody] AuthCredentials credentials)
         {
             if (credentials == null)
             {

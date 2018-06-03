@@ -3,9 +3,9 @@
 
 using Newtonsoft.Json;
 
-namespace SampleMessagingApp.Core.Web.Model
+namespace SampleMessagingApp.Core.Web.DTO.Requests
 {
-    public class AuthCredentials
+    public class AuthenticationRequest
     {
         [JsonProperty]
         public string Username { get; set; }
