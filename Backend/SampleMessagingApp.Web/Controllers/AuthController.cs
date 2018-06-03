@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SampleMessagingApp.Core.Model.Identity;
 using SampleMessagingApp.Core.Services.Jwt;
+using SampleMessagingApp.Core.Web.DTO.Requests;
 using SampleMessagingApp.Core.Web.Model;
 
 namespace SampleMessagingApp.Web.Controllers
@@ -26,7 +27,7 @@ namespace SampleMessagingApp.Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] AuthCredentials credentials)
+        public async Task<IActionResult> Login([FromBody] AuthenticationRequest credentials)
         {
             if (credentials == null)
             {
@@ -37,7 +38,7 @@ namespace SampleMessagingApp.Web.Controllers
 
             if (user != null)
             {
-                var result = await signInManager.CheckPasswordSignInAsync(user, credentials.Password, false);
+                var result = await signInManager.CheckPasswordSignInAsync(user, credentials.Password, lockoutOnFailure: true);
 
                 var claims = await userManager.GetClaimsAsync(user);
 
