@@ -1,16 +1,21 @@
+// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using System;
-using System.Runtime.ExceptionServices;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using SampleMessagingApp.Core.Database;
 using SampleMessagingApp.Core.Model.Identity;
+using SampleMessagingApp.Core.Services.Jwt;
+using SampleMessagingApp.Core.Utils;
 
 namespace SampleMessagingApp.Web
 {
@@ -24,22 +29,49 @@ namespace SampleMessagingApp.Web
         {
             Environment = env;
 
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath);
-
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets<Startup>();
-            }
-
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddUserSecrets<Startup>()
+                .AddEnvironmentVariables()
+                .Build();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddMvc(config =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                config.Filters.Add(new AuthorizeFilter(policy));
+            });
+
+            var jwtService = CreateJwtService(Configuration);
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            // Configure the Validation Options:
+            .AddJwtBearer(options =>
+            {
+                options.ClaimsIssuer = jwtService.ClaimsIssuer;
+                options.Audience = jwtService.Audience;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    IssuerSigningKey = jwtService.SigningKey,
+                    ValidateIssuerSigningKey = true,
+                    RequireExpirationTime = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -65,40 +97,42 @@ namespace SampleMessagingApp.Web
                 options.User.RequireUniqueEmail = true;
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(o =>
-                {
-                    // You also need to update /wwwroot/app/scripts/app.js
-                    o.Authority = Configuration["oidc:authority"];
-                    o.Audience = Configuration["oidc:clientid"];
-                });
-
+            // Register the JWT Service:
+            services.AddSingleton(jwtService);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseAuthentication();
-
-            // [Authorize] would usually handle this
-            app.Use(async (context, next) =>
+            if (env.IsDevelopment())
             {
-                // Use this if there are multiple authentication schemes
-                var authResult = await context.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
-                if (authResult.Succeeded && authResult.Principal.Identity.IsAuthenticated)
-                {
-                    await next();
-                }
-                else if (authResult.Failure != null)
-                {
-                    // Rethrow, let the exception page handle it.
-                    ExceptionDispatchInfo.Capture(authResult.Failure).Throw();
-                }
-                else
-                {
-                    await context.ChallengeAsync();
-                }
-            });
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseAuthentication();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            app.UseMvc();
+        }
+
+        private IJwtService CreateJwtService(IConfiguration configuration)
+        {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            var audience = configuration["SampleMessagingApp:Jwt:Audience"];
+            var issuer = configuration["SampleMessagingApp:Jwt:Issuer"];
+            var secretKey = configuration["SampleMessagingApp:Jwt:SecretKey"];
+            var secretAlgorithm = configuration["SampleMessagingApp:Jwt:SecurityAlgorithm"];
+
+            return new JwtService(
+                claimsIssuer: issuer,
+                audience: audience,
+                signingKey: JwtUtils.GetSymmetricSecurityKey(secretKey),
+                signingCredentials: JwtUtils.GetSigningCredentials(secretKey, secretAlgorithm)
+               );
         }
     }
 }

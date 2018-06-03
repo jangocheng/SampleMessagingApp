@@ -7,3 +7,4 @@ bin/
 obj/
 packages/
 FcmSharp.sln.DotSettings.user
+*.user
