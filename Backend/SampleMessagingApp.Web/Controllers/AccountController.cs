@@ -1,13 +1,12 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Policy;
+﻿// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SampleMessagingApp.Core.Model.Identity;
 using SampleMessagingApp.Core.Services.Email;
-using SampleMessagingApp.Core.Services.Jwt;
 using SampleMessagingApp.Core.Web.DTO.Requests;
 
 namespace SampleMessagingApp.Web.Controllers
@@ -46,9 +45,9 @@ namespace SampleMessagingApp.Web.Controllers
             this.emailConfirmationService = emailConfirmationService;
         }
 
+        [HttpPost("register.request")]
         [AllowAnonymous]
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromQuery] RegisterAccountRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterAccountRequest request)
         {
             if (request == null)
             {
@@ -78,8 +77,8 @@ namespace SampleMessagingApp.Web.Controllers
             return BadRequest();
         }
 
+        [HttpPost("register.confirm")]
         [AllowAnonymous]
-        [HttpGet]
         public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailRequest request)
         {
             var user = await userManager.FindByIdAsync(request.UserId);
@@ -98,5 +97,50 @@ namespace SampleMessagingApp.Web.Controllers
 
             return BadRequest();
         }
+
+        [HttpGet("reset.request")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RequestPasswordReset([FromBody] ResetPasswordRequest request)
+        {
+            var user = await userManager.FindByIdAsync(request.UserId);
+
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            // Generate Confirmation Token for the User:
+            var resetCode = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            // Generate the Callback URL for the Confirmation:
+            var confirmationUrl = Url.ResetPasswordCallbackLink(user.Id, resetCode, Request.Scheme);
+
+            // Send the Mail:
+            await emailConfirmationService.SendEmailConfirmationAsync(user, confirmationUrl);
+
+            return Ok();
+        }
+
+        [HttpPost("reset.confirm")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var user = await userManager.FindByIdAsync(request.UserId);
+
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            var result = await userManager.ResetPasswordAsync(user, request.Code, request.Password);
+
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+
     }
 }

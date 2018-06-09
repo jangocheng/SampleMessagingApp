@@ -1,12 +1,10 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SampleMessagingApp.Core.Model.Identity;
 using SampleMessagingApp.Core.Services.Jwt;
-using SampleMessagingApp.Core.Web.DTO.Requests;
 
 namespace SampleMessagingApp.Web.Controllers
 {
