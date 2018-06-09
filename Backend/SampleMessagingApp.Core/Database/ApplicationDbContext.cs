@@ -3,6 +3,7 @@
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SampleMessagingApp.Core.Model.Email;
 using SampleMessagingApp.Core.Model.Identity;
 
 namespace SampleMessagingApp.Core.Database
@@ -13,5 +14,7 @@ namespace SampleMessagingApp.Core.Database
             : base(options)
         {
         }
+
+
     }
 }

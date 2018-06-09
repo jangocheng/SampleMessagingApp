@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SampleMessagingApp.Core.Database;
 using SampleMessagingApp.Core.Model.Identity;
+using SampleMessagingApp.Core.Services.Email;
 using SampleMessagingApp.Core.Services.Jwt;
 using SampleMessagingApp.Core.Utils;
 
@@ -66,7 +67,12 @@ namespace SampleMessagingApp.Web
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+                {
+                    options.SignIn.RequireConfirmedEmail = true;
+                    // Enable for 2-FA:
+                    //options.SignIn.RequireConfirmedPhoneNumber = true;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -101,6 +107,9 @@ namespace SampleMessagingApp.Web
 
             // Register Services:
             services.AddSingleton(jwtService);
+
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IEmailConfirmationService, EmailConfirmationService>();
 
         }
 

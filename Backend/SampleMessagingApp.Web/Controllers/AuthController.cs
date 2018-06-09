@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using SampleMessagingApp.Core.Model.Identity;
 using SampleMessagingApp.Core.Services.Jwt;
 using SampleMessagingApp.Core.Web.DTO.Requests;
-using SampleMessagingApp.Core.Web.Model;
 
 namespace SampleMessagingApp.Web.Controllers
 {
@@ -25,7 +24,7 @@ namespace SampleMessagingApp.Web.Controllers
             this.signInManager = signInManager;
         }
 
-        [HttpPost]
+        [HttpPost("token")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] AuthenticationRequest credentials)
         {
@@ -36,19 +35,20 @@ namespace SampleMessagingApp.Web.Controllers
 
             var user = await userManager.FindByEmailAsync(credentials.Username);
 
-            if (user != null)
+            if (user == null)
             {
-                var result = await signInManager.CheckPasswordSignInAsync(user, credentials.Password, lockoutOnFailure: true);
+                return Unauthorized();
+            }
 
-                var claims = await userManager.GetClaimsAsync(user);
+            var result = await signInManager.CheckPasswordSignInAsync(user, credentials.Password, lockoutOnFailure: true);
 
-                // Additional Token Claims:
-                claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.UserName));
+            var claims = await userManager.GetClaimsAsync(user);
 
-                if (result.Succeeded)
-                {
-                    return Ok(new { token = jwtService.CreateToken(claims) });
-                }
+            claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.UserName));
+
+            if (result.Succeeded)
+            {
+                return Ok(new { token = jwtService.CreateToken(claims) });
             }
 
             return Unauthorized();
