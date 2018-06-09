@@ -5,6 +5,6 @@ namespace SampleMessagingApp.Core.Services.Email
 {
     public interface IEmailConfirmationService
     {
-        Task SendConfirmationMailAsync(ApplicationUser user, string confirmationUrl);
+        Task SendEmailConfirmationAsync(ApplicationUser user, string confirmationUrl);
     }
 }
