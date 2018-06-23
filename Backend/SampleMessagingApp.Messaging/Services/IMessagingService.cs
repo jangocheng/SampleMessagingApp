@@ -8,6 +8,10 @@ namespace SampleMessagingApp.Messaging.Services
 {
     public interface IMessagingService
     {
+        void Subscribe(ApplicationUser user, Topic topic);
+
+        void Unsubscribe(ApplicationUser user, Topic topic);
+
         IList<Topic> GetTopics(ApplicationUser user);
     }
 }
