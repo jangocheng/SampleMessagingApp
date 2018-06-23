@@ -19,7 +19,7 @@ namespace SampleMessagingApp.Core.Services.Email
         public async Task SendEmailConfirmationAsync(ApplicationUser user, string confirmationUrl)
         {
             var recipient = user.Email;
-            var subject = "E-Mail Address Confirmation";
+            var subject = "Confirm the Registration";
             var body = CreateBody(confirmationUrl);
 
             await service.SendEmailAsync(recipient, subject, body);

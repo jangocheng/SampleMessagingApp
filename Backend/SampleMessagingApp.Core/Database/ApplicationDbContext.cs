@@ -13,7 +13,5 @@ namespace SampleMessagingApp.Core.Database
             : base(options)
         {
         }
-
-
     }
 }
