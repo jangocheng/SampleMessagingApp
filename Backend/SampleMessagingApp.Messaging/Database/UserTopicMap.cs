@@ -26,6 +26,16 @@ namespace SampleMessagingApp.Messaging.Database
                 .WithMany()
                 .HasForeignKey()
                 .HasConstraintName("FK_UserTopic_Topic");
+
+            builder
+                .Property(x => x.ActivationTimestamp)
+                .HasColumnName("ActivationTimestamp")
+                .IsRequired();
+
+            builder
+                .Property(x => x.DeactivationTimestamp)
+                .HasColumnName("DeactivationTimestamp")
+                .IsRequired(false);
         }
     }
 }

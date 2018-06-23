@@ -10,5 +10,9 @@ namespace SampleMessagingApp.Messaging.Model
         public ApplicationUser User { get; set; }
 
         public Topic Topic { get; set; }
+
+        public DateTime ActivationTimestamp { get; set; }
+
+        public DateTime? DeactivationTimestamp { get; set; }
     }
 }

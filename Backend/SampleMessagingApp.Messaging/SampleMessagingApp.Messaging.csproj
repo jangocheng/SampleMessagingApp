@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SampleMessagingApp.Core\SampleMessagingApp.Core.csproj" />
+  </ItemGroup>
+
 </Project>
