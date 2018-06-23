@@ -34,7 +34,9 @@ namespace SampleMessagingApp.Core.Services.Email
                 client.EnableSsl = true;
                 client.Credentials = new NetworkCredential(options.SmtpUsername, options.SmtpPassword);
 
-                await client.SendMailAsync(message);
+                await client
+                    .SendMailAsync(message)
+                    .ConfigureAwait(false);
             }
         }
     }

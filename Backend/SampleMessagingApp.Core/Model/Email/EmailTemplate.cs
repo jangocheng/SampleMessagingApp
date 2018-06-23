@@ -3,7 +3,7 @@
 
 namespace SampleMessagingApp.Core.Model.Email
 {
-    public class ConfirmationEmailTemplate
+    public class EmailTemplate
     {
         public int Id { get; set; }
 

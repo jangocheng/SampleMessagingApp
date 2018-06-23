@@ -19,4 +19,8 @@
     <Folder Include="Web\Model\Registration\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SampleMessagingApp.Templates\SampleMessagingApp.Templates.csproj" />
+  </ItemGroup>
+
 </Project>
