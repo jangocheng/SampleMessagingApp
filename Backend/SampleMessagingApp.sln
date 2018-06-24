@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleMessagingApp.Template
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleMessagingApp.Messaging", "SampleMessagingApp.Messaging\SampleMessagingApp.Messaging.csproj", "{66805437-8C1E-4350-8586-ECD8B39520F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleMessagingApp.Dashboard", "SampleMessagingApp.Dashboard\SampleMessagingApp.Dashboard.csproj", "{71829EB7-A6CC-4C85-9C93-238453E2AFBF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleMessagingApp.Messaging.Fcm", "SampleMessagingApp.Messaging.Fcm\SampleMessagingApp.Messaging.Fcm.csproj", "{0F3B9199-630D-415B-AAC5-E01E2722A326}"
 EndProject
 Global
@@ -37,10 +35,6 @@ Global
 		{66805437-8C1E-4350-8586-ECD8B39520F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66805437-8C1E-4350-8586-ECD8B39520F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66805437-8C1E-4350-8586-ECD8B39520F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{71829EB7-A6CC-4C85-9C93-238453E2AFBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{71829EB7-A6CC-4C85-9C93-238453E2AFBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{71829EB7-A6CC-4C85-9C93-238453E2AFBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{71829EB7-A6CC-4C85-9C93-238453E2AFBF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F3B9199-630D-415B-AAC5-E01E2722A326}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0F3B9199-630D-415B-AAC5-E01E2722A326}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F3B9199-630D-415B-AAC5-E01E2722A326}.Release|Any CPU.ActiveCfg = Release|Any CPU

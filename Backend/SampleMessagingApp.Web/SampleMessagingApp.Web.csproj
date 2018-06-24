@@ -13,5 +13,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SampleMessagingApp.Core\SampleMessagingApp.Core.csproj" />
+    <ProjectReference Include="..\SampleMessagingApp.Messaging.Fcm\SampleMessagingApp.Messaging.Fcm.csproj" />
+    <ProjectReference Include="..\SampleMessagingApp.Messaging\SampleMessagingApp.Messaging.csproj" />
+    <ProjectReference Include="..\SampleMessagingApp.Templates\SampleMessagingApp.Templates.csproj" />
   </ItemGroup>
 </Project>

@@ -17,6 +17,8 @@ using SampleMessagingApp.Core.Model.Identity;
 using SampleMessagingApp.Core.Services.Email;
 using SampleMessagingApp.Core.Services.Jwt;
 using SampleMessagingApp.Core.Utils;
+using SampleMessagingApp.Messaging.Database.Map;
+using SampleMessagingApp.Messaging.Fcm.Database.Map;
 
 namespace SampleMessagingApp.Web
 {
@@ -63,6 +65,11 @@ namespace SampleMessagingApp.Web
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+            // Register Database Entity Maps:
+            services.AddSingleton<TopicMap>();
+            services.AddSingleton<UserTopicMap>();
+            services.AddSingleton<UserRegistrationMap>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -146,5 +153,7 @@ namespace SampleMessagingApp.Web
                 signingCredentials: JwtUtils.GetSigningCredentials(secretKey, secretAlgorithm)
                );
         }
+
+        
     }
 }
