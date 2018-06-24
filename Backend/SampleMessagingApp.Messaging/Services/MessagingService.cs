@@ -20,39 +20,11 @@ namespace SampleMessagingApp.Messaging.Services
         {
             this.transport = transport;
         }
-
-        public async Task RegisterUserAsync(ApplicationUser user, string registrationToken, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            using (var context = new MessagingDbContext())
-            {
-                await context.UserRegistrations.AddAsync(new UserRegistration() {User = user, RegistrationToken = registrationToken}, cancellationToken);
-
-                await context.SaveChangesAsync(cancellationToken);
-            }
-        }
-
-        public async Task UpdateUserRegistrationAsync(ApplicationUser user, string refreshToken, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            using (var context = new MessagingDbContext())
-            {
-                var registration = await context.UserRegistrations
-                    .FirstOrDefaultAsync(x => x.User == user, cancellationToken);
-
-                if (registration == null)
-                {
-                    throw new Exception($"User {user.Id} is not registered");
-                }
-
-                registration.DeactivationDate = DateTime.UtcNow;
-                
-                await context.UserRegistrations.AddAsync(new UserRegistration() { User = user, RegistrationToken = refreshToken }, cancellationToken);
-
-                await context.SaveChangesAsync(cancellationToken);
-            }
-        }
-
+        
         public async Task SubscribeAsync(ApplicationUser user, Topic topic, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await transport.SubscribeAsync(user, topic, cancellationToken);
+
             using (var context = new MessagingDbContext())
             {
                 await context.UserTopics.AddAsync(new UserTopic() {User = user, Topic = topic, SubscriptionDate = DateTime.UtcNow}, cancellationToken);
@@ -76,6 +48,11 @@ namespace SampleMessagingApp.Messaging.Services
 
                 await context.SaveChangesAsync(cancellationToken);
             }
+        }
+
+        public async Task SendNotificationAsync(Topic topic, Notification notification, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await transport.SendNotificationAsync(topic, notification, cancellationToken);
         }
 
         public async Task<IList<Topic>> GetTopicsAsync(ApplicationUser user, CancellationToken cancellationToken = default(CancellationToken))
