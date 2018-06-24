@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using SampleMessagingApp.Core.Database.Context;
 using SampleMessagingApp.Core.Model.Identity;
 using SampleMessagingApp.Messaging.Fcm.Model;
@@ -9,11 +10,17 @@ using SampleMessagingApp.Messaging.Model;
 
 namespace SampleMessagingApp.Web.Database
 {
-    public static class DatabaseSeedInitializer
+    public static class DatabaseInitializer
     {
-        public static async Task InitializeAsync(IConfiguration configuration, UserManager<ApplicationUser> manager, ApplicationDbContext context)
+        public static async Task InitializeAsync(IServiceProvider services)
         {
+            var context = services.GetService<ApplicationDbContext>();
+
             context.Database.EnsureCreated();
+
+            // Create the Admin User:
+            var configuration = services.GetService<IConfiguration>();
+            var manager = services.GetService<UserManager<ApplicationUser>>();
 
             var admin = new ApplicationUser
             {
@@ -23,6 +30,7 @@ namespace SampleMessagingApp.Web.Database
             };
 
             await manager.CreateAsync(admin, configuration["Users:Admin:Password"]);
+
 
             // Add Topics:
             var topic1 = new Topic {Name = "Topic1"};

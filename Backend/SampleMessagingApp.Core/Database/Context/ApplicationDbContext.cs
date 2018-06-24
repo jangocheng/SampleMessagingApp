@@ -10,12 +10,22 @@ using SampleMessagingApp.Core.Model.Identity;
 
 namespace SampleMessagingApp.Core.Database.Context
 {
+    public class EntityTypeMappings
+    {
+        public readonly IEnumerable<IEntityTypeMap> Mappings;
+
+        public EntityTypeMappings(IEnumerable<IEntityTypeMap> mappings)
+        {
+            Mappings = mappings;
+        }
+    }
+
     public class ApplicationDbContextOptions
     {
         public readonly DbContextOptions<ApplicationDbContext> Options;
-        public readonly IList<IEntityTypeMap> Mappings;
+        public readonly EntityTypeMappings Mappings;
 
-        public ApplicationDbContextOptions(DbContextOptions<ApplicationDbContext> options, IList<IEntityTypeMap> mappings)
+        public ApplicationDbContextOptions(DbContextOptions<ApplicationDbContext> options, EntityTypeMappings mappings)
         {
             Options = options;
             Mappings = mappings;
@@ -36,7 +46,7 @@ namespace SampleMessagingApp.Core.Database.Context
         {
             base.OnModelCreating(builder);
 
-            foreach (var mapping in options.Mappings)
+            foreach (var mapping in options.Mappings.Mappings)
             {
                 mapping.Map(builder);
             }

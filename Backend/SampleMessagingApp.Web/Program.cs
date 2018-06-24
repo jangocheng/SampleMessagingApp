@@ -3,6 +3,8 @@
 
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using SampleMessagingApp.Web.Database;
 
 namespace SampleMessagingApp.Web
 {
@@ -10,7 +12,16 @@ namespace SampleMessagingApp.Web
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            var host = BuildWebHost(args);
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                DatabaseInitializer.InitializeAsync(services).GetAwaiter().GetResult();
+            }
+
+            host.Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

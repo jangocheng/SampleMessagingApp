@@ -71,8 +71,17 @@ namespace SampleMessagingApp.Web
             services.AddSingleton<UserTopicMap>();
             services.AddSingleton<UserRegistrationMap>();
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddSingleton<EntityTypeMappings>();
+
+            // Add the DbContextOptions:
+            services.AddSingleton(new DbContextOptionsBuilder<ApplicationDbContext>()
+                    .UseSqlServer("DefaultConnection")
+                    .Options);
+
+            services.AddSingleton<ApplicationDbContextOptions>();
+
+            // Finally Add the Applications DbContext:
+            services.AddDbContext<ApplicationDbContext>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
                 {
