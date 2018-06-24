@@ -10,11 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Exceptions\" />
-    <Folder Include="Configuration\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FcmSharp" Version="2.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" />

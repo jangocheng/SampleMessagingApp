@@ -1,13 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SampleMessagingApp.Core.Database.Map;
 using SampleMessagingApp.Messaging.Model;
 
-namespace SampleMessagingApp.Messaging.Database
+namespace SampleMessagingApp.Messaging.Database.Map
 {
-    public class TopicMap : IEntityTypeMap<Topic>
+    public class TopicMap : BaseEntityMap<Topic>
     {
-        public void Map(EntityTypeBuilder<Topic> builder)
+        protected override void InternalMap(EntityTypeBuilder<Topic> builder)
         {
             builder.ToTable("Topic", "sample");
 
@@ -24,5 +27,6 @@ namespace SampleMessagingApp.Messaging.Database
                 .IsRequired()
                 .HasMaxLength(255);
         }
+
     }
 }

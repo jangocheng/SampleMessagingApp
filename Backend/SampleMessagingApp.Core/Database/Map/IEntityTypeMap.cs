@@ -6,9 +6,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace SampleMessagingApp.Core.Database.Map
 {
-    public interface IEntityTypeMap<TEntityType>
-        where TEntityType : class
+    public interface IEntityTypeMap
     {
-        void Map(EntityTypeBuilder<TEntityType> builder);
+        void Map(ModelBuilder builder);
     }
 }

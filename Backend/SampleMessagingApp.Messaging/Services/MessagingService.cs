@@ -1,13 +1,15 @@
-﻿using System;
+﻿// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SampleMessagingApp.Core.Database.Context;
+using SampleMessagingApp.Core.Database.Factory;
 using SampleMessagingApp.Core.Model.Identity;
-using SampleMessagingApp.Messaging.Database.Context;
-using SampleMessagingApp.Messaging.Exceptions;
 using SampleMessagingApp.Messaging.Model;
 
 namespace SampleMessagingApp.Messaging.Services
@@ -15,19 +17,21 @@ namespace SampleMessagingApp.Messaging.Services
     public class MessagingService : IMessagingService
     {
         private readonly IMessagingTransport transport;
+        private readonly IApplicationDbContextFactory factory;
 
-        public MessagingService(IMessagingTransport transport)
+        public MessagingService(IApplicationDbContextFactory factory, IMessagingTransport transport)
         {
             this.transport = transport;
+            this.factory = factory;
         }
         
         public async Task SubscribeAsync(ApplicationUser user, Topic topic, CancellationToken cancellationToken = default(CancellationToken))
         {
             await transport.SubscribeAsync(user, topic, cancellationToken);
 
-            using (var context = new MessagingDbContext())
+            using (var context = factory.Create())
             {
-                await context.UserTopics.AddAsync(new UserTopic() {User = user, Topic = topic, SubscriptionDate = DateTime.UtcNow}, cancellationToken);
+                await context.DbSet<UserTopic>().AddAsync(new UserTopic() {User = user, Topic = topic, SubscriptionDate = DateTime.UtcNow}, cancellationToken);
 
                 await context.SaveChangesAsync(cancellationToken);
             }
@@ -35,13 +39,13 @@ namespace SampleMessagingApp.Messaging.Services
 
         public async Task UnsubscribeAsync(ApplicationUser user, Topic topic, CancellationToken cancellationToken = default(CancellationToken))
         {
-            using (var context = new MessagingDbContext())
+            using (var context = factory.Create())
             {
-                var registration = await context.UserTopics.FirstOrDefaultAsync(x => x.User == user && x.Topic == topic, cancellationToken);
+                var registration = await context.DbSet<UserTopic>().FirstOrDefaultAsync(x => x.User == user && x.Topic == topic, cancellationToken);
 
                 if (registration == null)
                 {
-                    throw new UserTopicNotRegisteredException();
+                    throw new Exception($"User {user.Id} is not registered to Topic {topic.Name}");
                 }
 
                 registration.UnsubscriptionDate = DateTime.UtcNow;
@@ -63,9 +67,9 @@ namespace SampleMessagingApp.Messaging.Services
 
         public async Task<IList<Topic>> GetTopicsAsync(ApplicationUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
-            using (var context = new MessagingDbContext())
+            using (var context = factory.Create())
             {
-                var registrations = await context.UserTopics
+                var registrations = await context.DbSet<UserTopic>()
                         // We need the Topics:
                         .Include(x => x.Topic)
                     // Where the User is the given user:

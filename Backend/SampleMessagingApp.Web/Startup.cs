@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using SampleMessagingApp.Core.Database;
+using SampleMessagingApp.Core.Database.Context;
 using SampleMessagingApp.Core.Model.Identity;
 using SampleMessagingApp.Core.Services.Email;
 using SampleMessagingApp.Core.Services.Jwt;
