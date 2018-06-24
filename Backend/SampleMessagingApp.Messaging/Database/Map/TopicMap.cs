@@ -12,7 +12,7 @@ namespace SampleMessagingApp.Messaging.Database.Map
     {
         protected override void InternalMap(EntityTypeBuilder<Topic> builder)
         {
-            builder.ToTable("Topic", "sample");
+            builder.ToTable("Topic", "messaging");
 
             builder
                 .HasKey(x => x.Id)

@@ -25,7 +25,7 @@ namespace SampleMessagingApp.Messaging.Fcm.Database.Map
             builder
                 .HasOne(x => x.User)
                 .WithMany()
-                .HasForeignKey()
+                .HasForeignKey("UserId")
                 .HasConstraintName("FK_UserRegistration_User");
 
             builder.Property(x => x.RegistrationToken)

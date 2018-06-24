@@ -31,7 +31,6 @@ namespace SampleMessagingApp.Web.Database
 
             await manager.CreateAsync(admin, configuration["Users:Admin:Password"]);
 
-
             // Add Topics:
             var topic1 = new Topic {Name = "Topic1"};
             var topic2 = new Topic {Name = "Topic2"};
@@ -40,7 +39,7 @@ namespace SampleMessagingApp.Web.Database
 
             // Add UserTopics:
             var adminTopic1 = new UserTopic {User = admin, Topic = topic1, SubscriptionDate = DateTime.UtcNow};
-            var adminTopic2 = new UserTopic {User = admin, Topic = topic1, SubscriptionDate = DateTime.UtcNow};
+            var adminTopic2 = new UserTopic {User = admin, Topic = topic2, SubscriptionDate = DateTime.UtcNow};
 
             await context.DbSet<UserTopic>().AddRangeAsync(adminTopic1, adminTopic2);
 

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Linq;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -10,9 +11,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SampleMessagingApp.Core.Database.Context;
+using SampleMessagingApp.Core.Database.Map;
 using SampleMessagingApp.Core.Model.Identity;
 using SampleMessagingApp.Core.Services.Email;
 using SampleMessagingApp.Core.Services.Jwt;
@@ -67,15 +70,15 @@ namespace SampleMessagingApp.Web
             });
 
             // Register Database Entity Maps:
-            services.AddSingleton<TopicMap>();
-            services.AddSingleton<UserTopicMap>();
-            services.AddSingleton<UserRegistrationMap>();
+            services.AddTransient<IEntityTypeMap, TopicMap>();
+            services.AddSingleton<IEntityTypeMap, UserTopicMap>();
+            services.AddSingleton<IEntityTypeMap, UserRegistrationMap>();
 
             services.AddSingleton<EntityTypeMappings>();
-
+            
             // Add the DbContextOptions:
             services.AddSingleton(new DbContextOptionsBuilder<ApplicationDbContext>()
-                    .UseSqlServer("DefaultConnection")
+                    .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
                     .Options);
 
             services.AddSingleton<ApplicationDbContextOptions>();
@@ -150,10 +153,10 @@ namespace SampleMessagingApp.Web
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            var audience = configuration["SampleMessagingApp:Jwt:Audience"];
-            var issuer = configuration["SampleMessagingApp:Jwt:Issuer"];
-            var secretKey = configuration["SampleMessagingApp:Jwt:SecretKey"];
-            var secretAlgorithm = configuration["SampleMessagingApp:Jwt:SecurityAlgorithm"];
+            var audience = configuration["Jwt:Audience"];
+            var issuer = configuration["Jwt:Issuer"];
+            var secretKey = configuration["Jwt:SecretKey"];
+            var secretAlgorithm = configuration["Jwt:SecurityAlgorithm"];
 
             return new JwtService(
                 claimsIssuer: issuer,

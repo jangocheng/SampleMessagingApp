@@ -13,20 +13,22 @@ namespace SampleMessagingApp.Messaging.Database.Map
         protected override void InternalMap(EntityTypeBuilder<UserTopic> builder)
         {
             builder
-                .HasKey(x => new { x.Topic, x.User })
-                .HasName("PK_UserTopic")
-                .ForSqlServerIsClustered();
-            
+                .ToTable("UserTopic", "messaging");
+
+            builder
+                .HasKey("UserId", "TopicId")
+                .HasName("PK_UserTopic");
+
             builder
                 .HasOne(x => x.User)
                 .WithMany()
-                .HasForeignKey()
+                .HasForeignKey("UserId")
                 .HasConstraintName("FK_UserTopic_User");
 
             builder
                 .HasOne(x => x.Topic)
                 .WithMany()
-                .HasForeignKey()
+                .HasForeignKey("TopicId")
                 .HasConstraintName("FK_UserTopic_Topic");
         }
     }
