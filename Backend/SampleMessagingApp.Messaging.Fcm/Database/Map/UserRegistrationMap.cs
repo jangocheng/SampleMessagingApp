@@ -8,9 +8,9 @@ using SampleMessagingApp.Messaging.Fcm.Model;
 
 namespace SampleMessagingApp.Messaging.Fcm.Database.Map
 {
-    public class UserRegistrationMap : IEntityTypeMap<UserRegistration>
+    public class UserRegistrationMap : BaseEntityMap<UserRegistration>
     {
-        public void Map(EntityTypeBuilder<UserRegistration> builder)
+        protected override void InternalMap(EntityTypeBuilder<UserRegistration> builder)
         {
             builder.ToTable("UserRegistration", "fcm");
 

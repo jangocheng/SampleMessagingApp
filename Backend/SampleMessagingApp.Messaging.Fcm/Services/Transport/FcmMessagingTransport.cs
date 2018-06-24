@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using FcmSharp;
 using FcmSharp.Requests;
 using Microsoft.EntityFrameworkCore;
+using SampleMessagingApp.Core.Database.Context;
+using SampleMessagingApp.Core.Database.Factory;
 using SampleMessagingApp.Core.Model.Identity;
-using SampleMessagingApp.Messaging.Fcm.Database.Context;
+using SampleMessagingApp.Messaging.Fcm.Model;
 using SampleMessagingApp.Messaging.Model;
 using SampleMessagingApp.Messaging.Services;
 using Notification = SampleMessagingApp.Messaging.Model.Notification;
@@ -18,18 +20,20 @@ namespace SampleMessagingApp.Messaging.Fcm.Services.Transport
 {
     public class FcmMessagingTransport : IMessagingTransport, IDisposable
     {
+        private readonly IApplicationDbContextFactory factory;
         private readonly IFcmClient client;
 
-        public FcmMessagingTransport(IFcmClient client)
+        public FcmMessagingTransport(IApplicationDbContextFactory factory, IFcmClient client)
         {
+            this.factory = factory;
             this.client = client;
         }
         
         public async Task SubscribeAsync(ApplicationUser user, Topic topic, CancellationToken cancellationToken = default(CancellationToken))
         {
-            using (var context = new FirebaseDbContext())
+            using (var context = factory.Create())
             {
-                var registrationTokens = await context.UserRegistrations
+                var registrationTokens = await context.DbSet<UserRegistration>()
                     .Where(x => x.User == user)
                     .Where(x => x.DeactivationDate == null)
                     .Select(x => x.RegistrationToken)
@@ -62,9 +66,9 @@ namespace SampleMessagingApp.Messaging.Fcm.Services.Transport
 
         public async Task SendNotificationAsync(ApplicationUser user, Notification notification, CancellationToken cancellationToken = default(CancellationToken))
         {
-            using (var context = new FirebaseDbContext())
+            using (var context = factory.Create())
             {
-                var tokens = await context.UserRegistrations
+                var tokens = await context.DbSet<UserRegistration>()
                     .Where(x => x.DeactivationDate == null)
                     .Select(x => x.RegistrationToken)
                     .ToListAsync(cancellationToken);
