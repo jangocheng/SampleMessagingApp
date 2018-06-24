@@ -11,8 +11,8 @@ namespace SampleMessagingApp.Messaging.Model
 
         public Topic Topic { get; set; }
 
-        public DateTime ActivationTimestamp { get; set; }
+        public DateTime SubscriptionDate { get; set; }
 
-        public DateTime? DeactivationTimestamp { get; set; }
+        public DateTime? UnsubscriptionDate { get; set; }
     }
 }

@@ -11,7 +11,8 @@ namespace SampleMessagingApp.Messaging.Database
         {
             builder.ToTable("Topic", "sample");
 
-            builder.HasKey(x => x.Id)
+            builder
+                .HasKey(x => x.Id)
                 .HasName("PK_Topic");
 
             builder.Property(x => x.Id)
