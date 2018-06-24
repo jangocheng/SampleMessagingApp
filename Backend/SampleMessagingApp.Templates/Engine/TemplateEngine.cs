@@ -5,7 +5,7 @@ using System;
 using DotLiquid;
 using SampleMessagingApp.Templates.Model;
 
-namespace SampleMessagingApp.Templates
+namespace SampleMessagingApp.Templates.Engine
 {
     public class TemplateEngine : ITemplateEngine
     {

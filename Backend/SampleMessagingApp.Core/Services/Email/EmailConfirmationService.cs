@@ -4,6 +4,7 @@
 using System.Threading.Tasks;
 using SampleMessagingApp.Core.Model.Identity;
 using SampleMessagingApp.Templates;
+using SampleMessagingApp.Templates.Engine;
 using SampleMessagingApp.Templates.Model;
 
 namespace SampleMessagingApp.Core.Services.Email

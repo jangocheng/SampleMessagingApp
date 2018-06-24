@@ -3,7 +3,7 @@
 
 using SampleMessagingApp.Templates.Model;
 
-namespace SampleMessagingApp.Templates
+namespace SampleMessagingApp.Templates.Engine
 {
     public interface ITemplateEngine
     {
