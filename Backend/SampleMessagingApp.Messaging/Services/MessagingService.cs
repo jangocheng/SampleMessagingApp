@@ -55,6 +55,12 @@ namespace SampleMessagingApp.Messaging.Services
             await transport.SendNotificationAsync(topic, notification, cancellationToken);
         }
 
+        public async Task SendNotificationAsync(ApplicationUser user, Notification notification, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await transport.SendNotificationAsync(user, notification, cancellationToken);
+        }
+
+
         public async Task<IList<Topic>> GetTopicsAsync(ApplicationUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             using (var context = new MessagingDbContext())
