@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿// Copyright (c) Philipp Wagner. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Threading.Tasks;
 using SampleMessagingApp.Core.Model.Identity;
 using SampleMessagingApp.Templates;
 using SampleMessagingApp.Templates.Model;

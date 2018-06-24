@@ -14,12 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Web\DTO\Responses\" />
-    <Folder Include="Web\Model\Authentication\" />
-    <Folder Include="Web\Model\Registration\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SampleMessagingApp.Templates\SampleMessagingApp.Templates.csproj" />
   </ItemGroup>
 
